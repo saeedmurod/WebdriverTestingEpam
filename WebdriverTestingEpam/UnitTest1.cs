@@ -42,7 +42,7 @@ namespace WebdriverTestingEpam
             IWebElement inboxActual = driver.FindElement(By.XPath("//a[text()='Inbox']"));
 
 
-            Assert.AreEqual(expected, inboxActual.Text); // can not assert properly, driver url and title does not show actual page properties
+            Assert.AreEqual(expected, inboxActual.Text); 
 
             driver.Quit();
         }
@@ -95,6 +95,47 @@ namespace WebdriverTestingEpam
             Assert.AreEqual(expectedName, changedName.Text);
 
             driver.Quit();
+        }
+
+        [TestMethod]
+
+        public void EmailSender()
+        {
+            IWebDriver driver = new ChromeDriver();
+            driver.Manage().Window.Maximize();
+
+            driver.Navigate().GoToUrl(test_url);
+
+            driver.Manage().Window.Maximize();
+
+            IWebElement firstCheckBox = driver.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
+            firstCheckBox.SendKeys("saidmurodtestepam@gmail.com");
+
+            IWebElement zero = driver.FindElement(By.XPath("//*[@id=\"identifierNext\"]/div/button/span"));
+            zero.Click();
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+
+            IWebElement pass = driver.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
+            pass.SendKeys("x@iysu27");
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+            IWebElement path = driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
+            path.Click();
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            IWebElement compose = driver.FindElement(By.XPath("//div[text()='Compose']"));
+            compose.Click();
+
+            IWebElement receiver = driver.FindElement(By.CssSelector("input.agP.aFw"));
+            receiver.SendKeys("saidmurod11@gmail.com");
+
+            IWebElement emailText = driver.FindElement(By.CssSelector("div.Am.Al.editable.LW-avf.tS-tW"));
+            emailText.SendKeys("Hello, Mr. Saidmurod. Hope you are doing well. Just wanted to ask you for invoice.");
+
+            IWebElement sendButton = driver.FindElement(By.XPath("//div[text()='Send']"));
+            sendButton.Click();
         }
     }
 }
