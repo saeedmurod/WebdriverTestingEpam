@@ -10,7 +10,7 @@ namespace WebdriverTestingEpam
     public class UnitTest1
     {
         string test_url = "https://accounts.google.com/v3/signin/identifier?authuser=0&continue=https%3A%2F%2Fmail.google.com&ec=GAlAFw&hl=en&service=mail&flowName=GlifWebSignIn&flowEntry=AddSession&dsh=S1678429287%3A1696101771657405&theme=glif";
-        string expected = "Gmail";
+        string expected = "Inbox";
 
 
         [TestMethod]
@@ -39,11 +39,11 @@ namespace WebdriverTestingEpam
             IWebElement path = driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
             path.Click();
 
-            string actual = driver.Title;
+            IWebElement inboxActual = driver.FindElement(By.XPath("//a[text()='Inbox']"));
 
-            Assert.AreEqual(expected, actual); // can not assert properly, driver url and title does not show actual page properties
 
-            driver.Quit();
+            Assert.AreEqual(expected, inboxActual.Text); // can not assert properly, driver url and title does not show actual page properties
+
         }
 
 
@@ -89,8 +89,8 @@ namespace WebdriverTestingEpam
             IWebElement save = driver.FindElement(By.CssSelector("button.UywwFc-LgbsSe.UywwFc-LgbsSe-OWXEXe-dgl2Hf.wMI9H"));
             save.Click();
 
-            IWebElement changedName = driver.FindElement(By.XPath("//div[text()='Saidmurodkhon Mukhitdinov']"));
-            string expectedName = "Saidmurodkhon Mukhitdinov";
+            IWebElement changedName = driver.FindElement(By.XPath("//div[text()='saidmurodkhon mukhitdinov']"));
+            string expectedName = "saidmurodkhon mukhitdinov";
             Assert.AreEqual(expectedName, changedName.Text);
 
         }
