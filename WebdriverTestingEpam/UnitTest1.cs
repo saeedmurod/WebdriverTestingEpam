@@ -44,6 +44,7 @@ namespace WebdriverTestingEpam
 
             Assert.AreEqual(expected, inboxActual.Text); // can not assert properly, driver url and title does not show actual page properties
 
+            driver.Quit();
         }
 
 
@@ -93,6 +94,7 @@ namespace WebdriverTestingEpam
             string expectedName = "saidmurodkhon mukhitdinov";
             Assert.AreEqual(expectedName, changedName.Text);
 
+            driver.Quit();
         }
     }
 }
