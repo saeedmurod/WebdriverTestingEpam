@@ -88,6 +88,11 @@ namespace WebdriverTestingEpam
 
             IWebElement save = driver.FindElement(By.CssSelector("button.UywwFc-LgbsSe.UywwFc-LgbsSe-OWXEXe-dgl2Hf.wMI9H"));
             save.Click();
+
+            IWebElement changedName = driver.FindElement(By.XPath("//div[text()='Saidmurodkhon Mukhitdinov']"));
+            string expectedName = "Saidmurodkhon Mukhitdinov";
+            Assert.AreEqual(expectedName, changedName.Text);
+
         }
     }
 }
