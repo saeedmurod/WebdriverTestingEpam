@@ -1,6 +1,7 @@
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using static System.Net.WebRequestMethods;
 
@@ -57,7 +58,8 @@ namespace WebdriverTestingEpam
 
             driver.Navigate().GoToUrl(test_url);
 
-            driver.Manage().Window.Maximize();
+            Actions actions = new Actions(driver);
+
 
             IWebElement firstCheckBox = driver.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
             firstCheckBox.SendKeys("saidmurodtestepam@gmail.com");
@@ -82,16 +84,18 @@ namespace WebdriverTestingEpam
 
             IWebElement namechange = driver.FindElement(By.CssSelector("a.RlFDUe.I6g62c.N5YmOc.kJXJmd"));
             namechange.Click();
-
+            // could not find button
             driver.Navigate().GoToUrl("https://myaccount.google.com/profile/name/edit?continue=https://myaccount.google.com/personal-info&pli=1&rapt=AEjHL4Me6Rg3lVZv73Cqn-J7rLF2d2N_skP5XKlu48UiinQqJ2jKnYsrPEmiiDMAxnlUPhHeeNJC7zUblz6iKBOHWBn2BVxtCQ");
+            
             IWebElement namechanger = driver.FindElement(By.Id("i6"));
-            namechanger.SendKeys("khon");
+            actions.DoubleClick(namechanger).Perform();
+            namechanger.SendKeys("Saidmurod");
 
             IWebElement save = driver.FindElement(By.CssSelector("button.UywwFc-LgbsSe.UywwFc-LgbsSe-OWXEXe-dgl2Hf.wMI9H"));
             save.Click();
 
-            IWebElement changedName = driver.FindElement(By.XPath("//div[text()='saidmurodkhon mukhitdinov']"));
-            string expectedName = "saidmurodkhon mukhitdinov";
+            IWebElement changedName = driver.FindElement(By.XPath("//div[text()='Saidmurod mukhitdinov']"));
+            string expectedName = "Saidmurod mukhitdinov";
             Assert.AreEqual(expectedName, changedName.Text);
 
             driver.Quit();
@@ -136,6 +140,16 @@ namespace WebdriverTestingEpam
 
             IWebElement sendButton = driver.FindElement(By.XPath("//div[text()='Send']"));
             sendButton.Click();
+
+            string differentAccountUrl = "https://accounts.google.com/v3/signin/identifier?authuser=0&continue=https%3A%2F%2Fmail.google.com&ec=GAlAFw&hl=en&service=mail&flowName=GlifWebSignIn&flowEntry=AddSession&dsh=S-1274899217%3A1696355119845412&theme=glif";
+            driver.Navigate().GoToUrl(differentAccountUrl);
+
+            var emailLogin1 = driver.FindElement(By.XPath("//input[@type='email']"));
+            emailLogin1.SendKeys("saidmurod11@gmail.com");
+
+            var nextLoginButton = driver.FindElement(By.XPath("//span[text()='Next']"));
+            nextLoginButton.Click();
+            // can not sign in
         }
     }
 }
