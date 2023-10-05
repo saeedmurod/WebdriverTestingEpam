@@ -138,7 +138,7 @@ namespace WebdriverTestingEpam
                 string originalWindow = driver.CurrentWindowHandle;
                 IWebElement accountsAndImports = driver.FindElement(By.XPath("//a[text()='Accounts and Import']"));
                 accountsAndImports.Click();
-                IWebElement manageAccount = driver.FindElement(By.Id(":e70"));
+                IWebElement manageAccount = driver.FindElement(By.XPath("//span[text()='edit info']"));
                 manageAccount.Click();
                 wait.Until(wd => wd.WindowHandles.Count == 2);
                 foreach (string window in driver.WindowHandles)
@@ -216,25 +216,62 @@ namespace WebdriverTestingEpam
             composeButton.Click();
 
             IWebElement receiverEmail = driver.FindElement(By.CssSelector("input.agP.aFw"));
-            receiverEmail.SendKeys("saidmurodmum@mail.ru");
+            receiverEmail.SendKeys("steve@uzautotransinc.com");
 
             IWebElement emailText = driver.FindElement(By.CssSelector("div.Am.Al.editable.LW-avf.tS-tW"));
             emailText.SendKeys("Hi saidmurod, hope you are ok. Do not forget to finish your task.");
 
-            IWebElement sendButton = driver.FindElement(By.XPath("//div[text()='Send']"));
-            sendButton.Click();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            try
+            {
+                IWebElement sendButton = driver.FindElement(By.XPath("//div[text()='Send']"));
+                sendButton.Click();
+            }
+            catch (OpenQA.Selenium.UnhandledAlertException)
+            {
+                driver.SwitchTo().Alert().Accept();
+            }
+
+            Thread.Sleep(10000);
+            driver.Quit();
+            
+
+            IWebDriver driver1 = new ChromeDriver();
+
+            driver1.Manage().Window.Maximize();
+
+            driver1.Navigate().GoToUrl(test_url);
 
 
-            string differentAccountUrl = "https://mail.ru/";
-            driver.Navigate().GoToUrl(differentAccountUrl);
+            IWebElement firstCheckBox1 = driver1.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
+            firstCheckBox1.SendKeys("steve@uzautotransinc.com");
 
-            var emailLogin1 = driver.FindElement(By.CssSelector("button.ph-login.svelte-1ke9xx5"));
-            emailLogin1.Click();
-
-            var nextLoginButton1 = driver.FindElement(By.XPath("//span[text()='Next']"));
+            
+            IWebElement nextLoginButton1 = driver1.FindElement(By.XPath("//*[@id=\"identifierNext\"]/div/button/span"));
             nextLoginButton1.Click();
-            // can not sign in
+
+            driver1.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+
+            IWebElement pass1 = driver1.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
+            pass1.SendKeys("xzsaiu77");
+
+            
+            IWebElement passButton1 = driver1.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
+            passButton1.Click();
+
+            Thread.Sleep(3000);
+            IWebElement notRead = driver1.FindElement(By.XPath("//span[text()='Hi saidmurod, hope you are ok. Do not forget to finish your task.']"));
+            notRead.Click();
+
+            IWebElement reply = driver1.FindElement(By.CssSelector("span.ams.bkH"));
+            reply.Click();
+
+            Thread.Sleep(3000);
+            IWebElement textboxReply = driver1.FindElement(By.Id(":u9"));
+            textboxReply.SendKeys("Hello, thank you for your message. Will work on your proposal");
+
+            IWebElement replyButton = driver1.FindElement(By.CssSelector("div.T-I.J-J5-Ji.aoO.v7.T-I-atl.L3"));
+            replyButton.Click();
         }
     }
 }
