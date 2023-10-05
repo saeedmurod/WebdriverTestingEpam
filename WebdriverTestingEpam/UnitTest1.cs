@@ -55,6 +55,7 @@ namespace WebdriverTestingEpam
 
             IWebDriver driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
             driver.Navigate().GoToUrl(test_url);
 
@@ -77,28 +78,59 @@ namespace WebdriverTestingEpam
             IWebElement passButton = driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
             passButton.Click();
 
-            IWebElement roundButton = driver.FindElement(By.CssSelector("a.gb_d.gb_Da.gb_H"));
-            roundButton.Click();
-            driver.Navigate().GoToUrl("https://myaccount.google.com/?hl=en&utm_source=OGB&utm_medium=act&pli=1"); //can not find the element and click
-            driver.Navigate().GoToUrl("https://myaccount.google.com/personal-info"); // can not find the element and click
+            IWebElement settingIcon = driver.FindElement(By.CssSelector("a.FH"));
+            settingIcon.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
 
-            IWebElement namechangePen = driver.FindElement(By.CssSelector("a.RlFDUe.I6g62c.N5YmOc.kJXJmd"));
-            namechangePen.Click();
-            // could not find button
-            driver.Navigate().GoToUrl("https://myaccount.google.com/profile/name/edit?continue=https://myaccount.google.com/personal-info&pli=1&rapt=AEjHL4Me6Rg3lVZv73Cqn-J7rLF2d2N_skP5XKlu48UiinQqJ2jKnYsrPEmiiDMAxnlUPhHeeNJC7zUblz6iKBOHWBn2BVxtCQ");
+            IWebElement seeAllSettings = driver.FindElement(By.CssSelector("button.Tj"));
+            seeAllSettings.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
             
-            IWebElement namechangerButton = driver.FindElement(By.Id("i6"));
-            actions.DoubleClick(namechangerButton).Perform();
-            namechangerButton.SendKeys("Saidmurod");
+            string originalWindow = driver.CurrentWindowHandle;
+            IWebElement accountsAndImports = driver.FindElement(By.XPath("//a[text()='Accounts and Import']"));
+            accountsAndImports.Click();
+            IWebElement manageAccount = driver.FindElement(By.Id(":e70"));
+            manageAccount.Click();
+            wait.Until(wd => wd.WindowHandles.Count == 2);
+            foreach (string window in driver.WindowHandles)
+            {
+                if (originalWindow != window)
+                {
+                    driver.SwitchTo().Window(window);
+                    break;
+                }
+            }
+            //Wait for the new tab to finish loading content
+            wait.Until(wd => wd.Title == "Gmail - Edit email address");
 
-            IWebElement save = driver.FindElement(By.CssSelector("button.UywwFc-LgbsSe.UywwFc-LgbsSe-OWXEXe-dgl2Hf.wMI9H"));
-            save.Click();
 
-            IWebElement changedName = driver.FindElement(By.XPath("//div[text()='Saidmurod mukhitdinov']"));
-            string expectedName = "Saidmurod mukhitdinov";
-            Assert.AreEqual(expectedName, changedName.Text);
+            string expectedName = "Shawn Ruz";
+                        
+            IWebElement radioButton = driver.FindElement(By.Id("cfn"));
+            actions.DoubleClick(radioButton).Perform();
+            radioButton.Clear();
+            radioButton.SendKeys("Shawn Ruz");
+            string secondWindow = driver.CurrentWindowHandle;
 
-            driver.Quit();
+            IWebElement submitButton = driver.FindElement(By.Id("bttn_sub"));
+            submitButton.Click();
+
+            wait.Until(wd => wd.WindowHandles.Count == 1);
+            foreach (string window in driver.WindowHandles)
+            {
+                if (secondWindow != window)
+                {
+                    driver.SwitchTo().Window(window);
+                    break;
+                }
+            }
+            //Wait for the new tab to finish loading content
+            wait.Until(wd => wd.Title == "Settings - saidmurodtestepam@gmail.com - Gmail");
+
+            IWebElement nameChangedChecker = driver.FindElement(By.XPath("//div[@class='rc']//following::td[@class='CY']"));
+            Assert.AreEqual(expectedName + " <saidmurodtestepam@gmail.com>", nameChangedChecker.Text);
+
         }
 
         [TestMethod]
@@ -133,10 +165,10 @@ namespace WebdriverTestingEpam
             composeButton.Click();
 
             IWebElement receiverEmail = driver.FindElement(By.CssSelector("input.agP.aFw"));
-            receiverEmail.SendKeys("saidmurod11@gmail.com");
+            receiverEmail.SendKeys("shawn@uzautotransinc.com");
 
             IWebElement emailText = driver.FindElement(By.CssSelector("div.Am.Al.editable.LW-avf.tS-tW"));
-            emailText.SendKeys("Hello, Mr. Saidmurod. Hope you are doing well. Just wanted to ask you for invoice.");
+            emailText.SendKeys("Hi Shawn!");
 
             IWebElement sendButton = driver.FindElement(By.XPath("//div[text()='Send']"));
             sendButton.Click();
