@@ -363,6 +363,94 @@ namespace WebdriverTestingEpam
 
         }
 
+
+        [TestMethod]
+        public void EmailContentChecker_LoginSendEmailReadReply_SuccesfulVerification()
+        {
+            driver = new ChromeDriver();
+            driver.Manage().Window.Maximize();
+
+            driver.Navigate().GoToUrl(test_url);
+
+            driver.Manage().Window.Maximize();
+
+            IWebElement firstCheckBox = driver.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
+            firstCheckBox.SendKeys("saidmurodtestepam@gmail.com");
+
+            IWebElement nextLoginButton = driver.FindElement(By.XPath("//*[@id=\"identifierNext\"]/div/button/span"));
+            nextLoginButton.Click();
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+
+            IWebElement pass = driver.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
+            pass.SendKeys("x@iysu27");
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+            IWebElement passButton = driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
+            passButton.Click();
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            IWebElement composeButton = driver.FindElement(By.XPath("//div[text()='Compose']"));
+            composeButton.Click();
+
+            IWebElement receiverEmail = driver.FindElement(By.CssSelector("input.agP.aFw"));
+            receiverEmail.SendKeys("steve@uzautotransinc.com");
+
+            IWebElement emailText = driver.FindElement(By.CssSelector("div.Am.Al.editable.LW-avf.tS-tW"));
+            emailText.SendKeys("Hi saidmurod, hope you are ok. Do not forget to finish your task.");
+
+            try
+            {
+                IWebElement sendButton = driver.FindElement(By.XPath("//div[text()='Send']"));
+                sendButton.Click();
+            }
+            catch (OpenQA.Selenium.UnhandledAlertException)
+            {
+                driver.SwitchTo().Alert().Accept();
+            }
+
+            Thread.Sleep(10000);
+            driver.Quit();
+
+
+            driver1 = new ChromeDriver();
+
+            driver1.Manage().Window.Maximize();
+
+            driver1.Navigate().GoToUrl(test_url);
+
+
+            IWebElement firstCheckBox1 = driver1.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
+            firstCheckBox1.SendKeys("steve@uzautotransinc.com");
+
+
+            IWebElement nextLoginButton1 = driver1.FindElement(By.XPath("//*[@id=\"identifierNext\"]/div/button/span"));
+            nextLoginButton1.Click();
+
+            driver1.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+
+            IWebElement pass1 = driver1.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
+            pass1.SendKeys("xzsaiu77");
+
+
+            IWebElement passButton1 = driver1.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
+            passButton1.Click();
+            Thread.Sleep(3000);
+
+            IWebElement notRead = driver1.FindElement(By.XPath("//span[text()='Hi saidmurod, hope you are ok. Do not forget to finish your task.']"));
+            notRead.Click();
+
+            Thread.Sleep(3000);
+            IWebElement textActual = driver1.FindElement(By.XPath("//div[text()='Hi saidmurod, hope you are ok. Do not forget to finish your task.']"));
+
+            string expectedName = "Hi saidmurod, hope you are ok. Do not forget to finish your task.";
+            Assert.AreEqual(expectedName, textActual.Text);
+
+        }
+
+
         [TestCleanup]
         public void Cleanup()
         {
