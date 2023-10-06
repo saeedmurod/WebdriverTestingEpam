@@ -47,6 +47,8 @@ namespace WebdriverTestingEpam
 
             Cleanup();
         }
+
+
         [TestMethod]
         public void Login_RightLoginWrongPassword_StuckOnPasswordPage()
         {
@@ -78,6 +80,7 @@ namespace WebdriverTestingEpam
 
             Cleanup();
         }
+
 
         [TestMethod]
         public void Login_NoLogin_StuckOnLoginPage()
@@ -275,9 +278,7 @@ namespace WebdriverTestingEpam
         }
    
 
-
         [TestMethod]
-
         public void EmailSenderChecker_LoginSendEmailReadReply_SuccesfulVerification()
         {
             driver = new ChromeDriver();
@@ -361,6 +362,7 @@ namespace WebdriverTestingEpam
             string expectedName = "Saidmurod Muhitdinov";
             Assert.AreEqual(expectedName, nameActual.Text);
 
+            Cleanup();
         }
 
 
@@ -448,6 +450,7 @@ namespace WebdriverTestingEpam
             string expectedName = "Hi saidmurod, hope you are ok. Do not forget to finish your task.";
             Assert.AreEqual(expectedName, textActual.Text);
 
+            Cleanup();
         }
 
 
