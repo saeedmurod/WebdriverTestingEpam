@@ -10,7 +10,8 @@ namespace WebdriverTestingEpam
     [TestClass]
     public class UnitTest1
     {
-
+        IWebDriver? driver;
+        IWebDriver? driver1;
         readonly string test_url = "https://accounts.google.com/v3/signin/identifier?authuser=0&continue=https%3A%2F%2Fmail.google.com&ec=GAlAFw&hl=en&service=mail&flowName=GlifWebSignIn&flowEntry=AddSession&dsh=S1678429287%3A1696101771657405&theme=glif";
         readonly string expected = "Inbox";
 
@@ -18,7 +19,7 @@ namespace WebdriverTestingEpam
         [TestMethod]
         public void Login_RightLoginPassword_SuccessfulLogin()
         {
-            IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
 
             driver.Navigate().GoToUrl(test_url);
@@ -44,12 +45,12 @@ namespace WebdriverTestingEpam
 
             Assert.AreEqual(expected, inboxActual.Text);
 
-            driver.Quit();
+            Cleanup();
         }
         [TestMethod]
         public void Login_RightLoginWrongPassword_StuckOnPasswordPage()
         {
-            IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
 
             driver.Navigate().GoToUrl(test_url);
@@ -74,12 +75,14 @@ namespace WebdriverTestingEpam
             IWebElement actualResult = driver.FindElement(By.XPath("//span[contains(text(),'Wrong password.')]"));
 
             Assert.AreEqual(expectedResult, actualResult.Text);
+
+            Cleanup();
         }
 
         [TestMethod]
         public void Login_NoLogin_StuckOnLoginPage()
         {
-            IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
 
             driver.Navigate().GoToUrl(test_url);
@@ -94,6 +97,8 @@ namespace WebdriverTestingEpam
             IWebElement actualResult = driver.FindElement(By.XPath("//div[text()='Enter an email or phone number']"));
 
             Assert.AreEqual(expectedResult, actualResult.Text);
+
+            Cleanup();
         }
 
 
@@ -101,28 +106,24 @@ namespace WebdriverTestingEpam
         public void LoginChangeName_CorrectLoginCorrectPassword_ChangedName()
         {
 
-            IWebDriver driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
+            driver = new ChromeDriver();
+            Actions actions = new Actions(driver);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
+            driver.Manage().Window.Maximize();
             driver.Navigate().GoToUrl(test_url);
-
-            Actions actions = new Actions(driver);
-
 
             IWebElement emailLogin = driver.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
             emailLogin.SendKeys("saidmurodtestepam@gmail.com");
 
             IWebElement nextLoginButton = driver.FindElement(By.XPath("//*[@id=\"identifierNext\"]/div/button/span"));
             nextLoginButton.Click();
-
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
 
             IWebElement pass = driver.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
             pass.SendKeys("x@iysu27");
-
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
             IWebElement passButton = driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
             passButton.Click();
 
@@ -134,10 +135,10 @@ namespace WebdriverTestingEpam
             seeAllSettings.Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
 
-
             string originalWindow = driver.CurrentWindowHandle;
             IWebElement accountsAndImports = driver.FindElement(By.XPath("//a[text()='Accounts and Import']"));
             accountsAndImports.Click();
+
             IWebElement manageAccount = driver.FindElement(By.XPath("//span[text()='edit info']"));
             manageAccount.Click();
             wait.Until(wd => wd.WindowHandles.Count == 2);
@@ -152,9 +153,7 @@ namespace WebdriverTestingEpam
             //Wait for the new tab to finish loading content
             wait.Until(wd => wd.Title == "Gmail - Edit email address");
 
-
             string expectedName = "Saidmurod Muhitdinov";
-
             IWebElement radioButton = driver.FindElement(By.Id("cfn"));
             actions.DoubleClick(radioButton).Perform();
             radioButton.Clear();
@@ -181,37 +180,32 @@ namespace WebdriverTestingEpam
             IWebElement nameChangedChecker = driver.FindElement(By.XPath("//div[@class='rc']//following::td[@class='CY']"));
             Assert.AreEqual(expectedName + " <saidmurodtestepam@gmail.com>", nameChangedChecker.Text);
 
-            driver.Quit();
+            Cleanup();
         }
 
         [TestMethod]
 
         public void EmailSender_LoginSendEmailReadReply_SuccessfulReply()
         {
-            IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
-
             driver.Navigate().GoToUrl(test_url);
-
-            driver.Manage().Window.Maximize();
 
             IWebElement firstCheckBox = driver.FindElement(By.XPath("//*[@id=\"identifierId\"]"));
             firstCheckBox.SendKeys("saidmurodtestepam@gmail.com");
 
             IWebElement nextLoginButton = driver.FindElement(By.XPath("//*[@id=\"identifierNext\"]/div/button/span"));
             nextLoginButton.Click();
-
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
 
             IWebElement pass = driver.FindElement(By.XPath("//*[@id=\"password\"]/div[1]/div/div[1]/input"));
             pass.SendKeys("x@iysu27");
-
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
             IWebElement passButton = driver.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
             passButton.Click();
-
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
             IWebElement composeButton = driver.FindElement(By.XPath("//div[text()='Compose']"));
             composeButton.Click();
 
@@ -235,10 +229,8 @@ namespace WebdriverTestingEpam
             driver.Quit();
 
 
-            IWebDriver driver1 = new ChromeDriver();
-
+            driver1 = new ChromeDriver();
             driver1.Manage().Window.Maximize();
-
             driver1.Navigate().GoToUrl(test_url);
 
 
@@ -279,14 +271,16 @@ namespace WebdriverTestingEpam
 
             Assert.AreEqual(textToMatch, expectedText.Text);
 
-            driver.Quit();
+            Cleanup();
         }
+   
+
 
         [TestMethod]
 
-        public void EmailSender()
+        public void EmailSenderChecker_LoginSendEmailReadReply_SuccesfulVerification()
         {
-            IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
 
             driver.Navigate().GoToUrl(test_url);
@@ -333,7 +327,7 @@ namespace WebdriverTestingEpam
             driver.Quit();
 
 
-            IWebDriver driver1 = new ChromeDriver();
+            driver1 = new ChromeDriver();
 
             driver1.Manage().Window.Maximize();
 
@@ -356,21 +350,31 @@ namespace WebdriverTestingEpam
 
             IWebElement passButton1 = driver1.FindElement(By.XPath("//*[@id=\"passwordNext\"]/div/button/span"));
             passButton1.Click();
-
             Thread.Sleep(3000);
+
             IWebElement notRead = driver1.FindElement(By.XPath("//span[text()='Hi saidmurod, hope you are ok. Do not forget to finish your task.']"));
             notRead.Click();
 
-            IWebElement reply = driver1.FindElement(By.CssSelector("span.ams.bkH"));
-            reply.Click();
-
             Thread.Sleep(3000);
-            IWebElement textboxReply = driver1.FindElement(By.CssSelector("div.Am.aO9.Al.editable.LW-avf.tS-tW"));
-            string textToMatch = "Hello, thank you for your message. Will work on your proposal";
-            textboxReply.SendKeys("Hello, thank you for your message. Will work on your proposal");
+            IWebElement nameActual = driver1.FindElement(By.XPath("//h3/span/span[1]/span"));
 
-            IWebElement replyButton = driver1.FindElement(By.CssSelector("div.T-I.J-J5-Ji.aoO.v7.T-I-atl.L3"));
-            replyButton.Click();
+            string expectedName = "Saidmurod Muhitdinov";
+            Assert.AreEqual(expectedName, nameActual.Text);
+
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            if (driver != null)
+            {
+                driver.Quit();
+            }
+            
+            else if (driver1 != null)
+            {
+                driver1.Quit();
+            }
         }
     }
 }
